@@ -101,7 +101,7 @@ endif
 chartsjs.h: bin2c$(EXEEXT) $(srcdir)/resources/js/charts.js
 if HAS_SEDTR
 	mkdir -p resources/js
-	cat $(srcdir)/resources/js/charts.js | sed -E "s@(,|;)[[:space:]]*//..*@\1@g" | sed -E "s@^[[:space:]]*//..*@@g" | sed "s/^[[:space:]]*//" | sed "/^$$/d" | tr -d "\r\n" > resources/js/charts.js.tmp
+	cat $(srcdir)/resources/js/charts.js | sed -r "s@(,|;)[[:space:]]*//..*@\1@g" | sed -r "s@^[[:space:]]*//..*@@g" | sed "s/^[[:space:]]*//" | sed "/^$$/d" | tr -d "\r\n" > resources/js/charts.js.tmp
 	./bin2c resources/js/charts.js.tmp src/chartsjs.h charts_js
 else
 	./bin2c $(srcdir)/resources/js/charts.js src/chartsjs.h charts_js
@@ -110,7 +110,7 @@ endif
 appjs.h: bin2c$(EXEEXT) $(srcdir)/resources/js/app.js
 if HAS_SEDTR
 	mkdir -p resources/js
-	cat $(srcdir)/resources/js/app.js | sed -E "s@(,|;)[[:space:]]*//..*@\1@g" | sed -E "s@^[[:space:]]*//..*@@g" | sed "s/^[[:space:]]*//" | sed "/^$$/d" | tr -d "\r\n" > resources/js/app.js.tmp
+	cat $(srcdir)/resources/js/app.js | sed -r "s@(,|;)[[:space:]]*//..*@\1@g" | sed -r "s@^[[:space:]]*//..*@@g" | sed "s/^[[:space:]]*//" | sed "/^$$/d" | tr -d "\r\n" > resources/js/app.js.tmp
 	./bin2c resources/js/app.js.tmp src/appjs.h app_js
 else
 	./bin2c $(srcdir)/resources/js/app.js src/appjs.h app_js
