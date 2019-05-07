@@ -1755,6 +1755,9 @@ ignore_line (GLog * glog, GLogItem * logitem)
   if (ignore_static (logitem->req))
     return conf.ignore_statics; // IGNORE_LEVEL_PANEL or IGNORE_LEVEL_REQ
 
+  //if(strlen (logitem->req) <= 17 || strncasecmp (logitem->req, "/exabeat-web-api/", 17) != 0)
+  //  return IGNORE_LEVEL_PANEL;
+
   /* check if we need to remove the request's query string */
   if (conf.ignore_qstr)
     strip_qstring (logitem->req);
@@ -1874,7 +1877,7 @@ insert_agent (int data_nkey, int agent_nkey, GModule module)
 }
 
 /* The following generates a unique key to identity unique visitors.
- * The key is made out of the IP, date, and user agent.
+ * The key is made out of the IP, date, userid and user agent.
  * Note that for readability, doing a simple snprintf/sprintf should
  * suffice, however, memcpy is the fastest solution
  *
@@ -1883,16 +1886,17 @@ static char *
 get_uniq_visitor_key (GLogItem * logitem)
 {
   char *ua = NULL, *key = NULL;
-  size_t s1, s2, s3;
+  size_t s1, s2, s3, s4;
 
   ua = deblank (xstrdup (logitem->agent));
 
   s1 = strlen (logitem->host);
   s2 = strlen (logitem->date);
-  s3 = strlen (ua);
+  s3 = strlen (logitem->userid);
+  s4 = strlen (ua);
 
   /* includes terminating null */
-  key = xcalloc (s1 + s2 + s3 + 3, sizeof (char));
+  key = xcalloc (s1 + s2 + s3 + s4 + 3, sizeof (char));
 
   memcpy (key, logitem->host, s1);
 
@@ -1900,7 +1904,10 @@ get_uniq_visitor_key (GLogItem * logitem)
   memcpy (key + s1 + 1, logitem->date, s2 + 1);
 
   key[s1 + s2 + 1] = '|';
-  memcpy (key + s1 + s2 + 2, ua, s3 + 1);
+  memcpy (key + s1 + s2 + 2, logitem->userid, s3 + 1);
+
+  key[s1 + s2 + s3 + 1] = '|';
+  memcpy (key + s1 + s2 + s3 + 2, ua, s4 + 1);
 
   free (ua);
   return key;
