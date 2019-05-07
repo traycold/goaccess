@@ -421,14 +421,6 @@ GoAccess.Nav = {
 	},
 
 	setLayout: function (layout) {
-		if ('horizontal' == layout) {
-			$('.container').classList.add('container-fluid');
-			$('.container').classList.remove('container');
-		} else if ('vertical' == layout) {
-			$('.container-fluid').classList.add('container');
-			$('.container').classList.remove('container-fluid');
-		}
-
 		GoAccess.AppPrefs['layout'] = layout;
 		GoAccess.setPrefs();
 
@@ -1728,13 +1720,8 @@ GoAccess.App = {
 
 	initDom: function () {
 		$('nav').classList.remove('hide');
-		$('.container').classList.remove('hide');
+		$('.container-fluid').classList.remove('hide');
 		$('.spinner').classList.add('hide');
-
-		if (GoAccess.AppPrefs['layout'] == 'horizontal') {
-			$('.container').classList.add('container-fluid');
-			$('.container-fluid').classList.remove('container');
-		}
 	},
 
 	renderData: function () {

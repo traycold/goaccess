@@ -265,7 +265,7 @@ print_html_body (FILE * fp, const char *now)
   "</nav>"
 
   "<i class='spinner fa fa-circle-o-notch fa-spin fa-3x fa-fw'></i>"
-  "<div class='container hide'>"
+  "<div class='container-fluid hide'>"
   "<div class='wrap-header'>"
   "<div class='row row-offcanvas row-offcanvas-right'>"
   "<div class='col-md-12'>"
