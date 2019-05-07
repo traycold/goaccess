@@ -59,7 +59,7 @@ struct tm *now_tm;
 /* maximum number of items within a panel */
 #define MAX_CHOICES      366
 /* real-time */
-#define MAX_CHOICES_RT    50
+#define MAX_CHOICES_RT    2000
 
 /* date and time length - e.g., 2016/12/12 12:12:12 -0600 */
 #define DATE_TIME     25 + 1
