@@ -1755,8 +1755,12 @@ ignore_line (GLog * glog, GLogItem * logitem)
   if (ignore_static (logitem->req))
     return conf.ignore_statics; // IGNORE_LEVEL_PANEL or IGNORE_LEVEL_REQ
 
-  //if(strlen (logitem->req) <= 17 || strncasecmp (logitem->req, "/exabeat-web-api/", 17) != 0)
-  //  return IGNORE_LEVEL_PANEL;
+  //only consider MOD_JK requests
+  if( strncmp (logitem->req, "/exabeat-web-api/", 17) != 0
+      && strncmp (logitem->req, "/exabeat-mrs-api/", 17) != 0
+      && strncmp (logitem->req, "/exabeat-dispatcher-web-api/", 28) != 0 
+    )
+    return IGNORE_LEVEL_PANEL;
 
   /* check if we need to remove the request's query string */
   if (conf.ignore_qstr)
