@@ -314,6 +314,17 @@ static GParse paneling[] = {
 };
 /* *INDENT-ON* */
 
+void upper_string(char s[]) {
+   int c = 0;
+   
+   while (s[c] != '\0') {
+      if (s[c] >= 'a' && s[c] <= 'z') {
+         s[c] = s[c] - 32;
+      }
+      c++;
+   }
+}
+
 /* Initialize a new GKeyData instance */
 static void
 new_modulekey (GKeyData * kdata)
@@ -1074,6 +1085,7 @@ parse_specifier (GLogItem * logitem, char **str, const char *p, const char *end)
     tkn = parse_string (&(*str), end, 1);
     if (tkn == NULL)
       return spec_err (logitem, SPEC_TOKN_NUL, *p, NULL);
+    upper_string(tkn);
     logitem->userid = tkn;
     break;
     /* remote hostname (IP only) */
@@ -1156,6 +1168,7 @@ parse_specifier (GLogItem * logitem, char **str, const char *p, const char *end)
       return spec_err (logitem, SPEC_TOKN_NUL, *p, NULL);
 
     logitem->req = parse_req (tkn, &logitem->method, &logitem->protocol);
+
     free (tkn);
     break;
     /* Status Code */
@@ -2134,6 +2147,10 @@ gen_remote_user_key (GKeyData * kdata, GLogItem * logitem)
   if (!logitem->userid)
     return 1;
 
+  //ignore null remote user
+  if(strcmp (logitem->userid, "-") == 0)
+    return 1;
+
   get_kdata (kdata, logitem->userid, logitem->userid);
 
   return 0;
@@ -2526,6 +2543,7 @@ pre_process_log (GLog * glog, char *line, int dry_run)
   GLogItem *logitem;
   int ret = 0;
   int ignorelevel = 0;
+  int i = 0;
 
   /* soft ignore these lines */
   if (valid_line (line))
@@ -2559,6 +2577,18 @@ pre_process_log (GLog * glog, char *line, int dry_run)
     logitem->is_static = 1;
 
   logitem->uniq_key = get_uniq_visitor_key (logitem);
+
+  //fprintf(stderr, "%s\n", logitem->req);
+  for (i = 0; i < conf.url_pattern_idx; ++i) {
+    //fprintf(stderr, "[%u] %s --> %s\n", i, conf.url_pattern[i], sss);
+    //fprintf(stderr, "[%d]\n", ret_match);
+    if(!regexec(&conf.url_pattern_regex[i], logitem->req, 0, NULL, REG_EXTENDED)){
+      //fprintf(stdout, "%s -> %s\n", logitem->req, conf.url_pattern[i]);
+      free (logitem->req);
+      logitem->req = xstrdup(conf.url_pattern[i]);        
+      break;
+    }
+  }
 
   inc_resp_size (glog, logitem->resp_size);
   process_log (logitem);

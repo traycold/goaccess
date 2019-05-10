@@ -57,7 +57,7 @@ struct tm *now_tm;
 #endif
 
 /* maximum number of items within a panel */
-#define MAX_CHOICES      366
+#define MAX_CHOICES      2000
 /* real-time */
 #define MAX_CHOICES_RT    2000
 

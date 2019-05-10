@@ -37,6 +37,7 @@
 #include <string.h>
 #include <getopt.h>
 #include <errno.h>
+#include <regex.h>
 
 #ifdef HAVE_LIBTOKYOCABINET
 #include "tcabdb.h"
@@ -135,6 +136,7 @@ struct option long_opts[] = {
   {"real-time-html"       , no_argument       , 0 ,  0  } ,
   {"sort-panel"           , required_argument , 0 ,  0  } ,
   {"static-file"          , required_argument , 0 ,  0  } ,
+  {"url-pattern"          , required_argument , 0 ,  0  } ,
 #ifdef HAVE_LIBSSL
   {"ssl-cert"             , required_argument , 0 ,  0  } ,
   {"ssl-key"              , required_argument , 0 ,  0  } ,
@@ -614,6 +616,21 @@ parse_long_opt (const char *name, const char *oarg)
     set_array_opt (oarg, conf.static_files, &conf.static_file_idx,
                    MAX_EXTENSIONS);
   }
+
+  /* ulr pattern */
+  if (!strcmp ("url-pattern", name) && conf.url_pattern_idx < MAX_PATTERNS) {
+    set_array_opt (oarg, conf.url_pattern, &conf.url_pattern_idx,
+                   MAX_PATTERNS);
+    if(regcomp(&conf.url_pattern_regex[conf.url_pattern_idx-1], oarg, REG_EXTENDED) != 0){
+      fprintf(stderr, "Could not compile regex %s\n", oarg);
+      exit(1);
+    } else {
+      //fprintf(stdout, "replaced: %s -> %s\n",conf.url_pattern[conf.url_pattern_idx-1],replace_str(conf.url_pattern[conf.url_pattern_idx-1], ".+?", "*"));
+      conf.url_pattern[conf.url_pattern_idx-1] = replace_str(conf.url_pattern[conf.url_pattern_idx-1], ".+?", "*");
+    }
+    //fprintf(stderr, "compiling [%d] [%d] %s\n", conf.url_pattern_idx, regexec(&conf.url_pattern_regex[conf.url_pattern_idx],"xxx",0, NULL, REG_EXTENDED), oarg);    
+  }
+
 
   /* GEOIP OPTIONS
    * ========================= */

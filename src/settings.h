@@ -31,10 +31,12 @@
 #define SETTINGS_H_INCLUDED
 
 #include <stdint.h>
+#include <regex.h>
 #include "commons.h"
 
 #define MAX_LINE_CONF         512
 #define MAX_EXTENSIONS        128
+#define MAX_PATTERNS          1000
 #define MAX_IGNORE_IPS 1024 + 128
 #define MAX_IGNORE_REF         64
 #define MAX_CUSTOM_COLORS      64
@@ -105,6 +107,8 @@ typedef struct GConf_
   const char *output_formats[MAX_OUTFORMATS];   /* output format, e.g. , HTML */
   const char *sort_panels[TOTAL_MODULES];       /* sorting options for each panel */
   const char *static_files[MAX_EXTENSIONS];     /* static extensions */
+  const char *url_pattern[MAX_PATTERNS];        /* url pattern */
+  regex_t url_pattern_regex[MAX_PATTERNS];      /* url pattern regex */
 
   /* Log/date/time formats */
   char *date_format;                /* date format */
@@ -199,6 +203,7 @@ typedef struct GConf_
   int output_format_idx;            /* output format index */
   int sort_panel_idx;               /* sort panel index */
   int static_file_idx;              /* static extensions index */
+  int url_pattern_idx;              /* url pattern index */
   int browsers_hash_idx;            /* browsers hash index */
 
   size_t static_file_max_len;
